@@ -115,7 +115,7 @@ function render(entries){ // newest first
   const cur = entries[0], f = fmt(cur.ts);
   $("holder").textContent = cur.name;
   $("since").textContent = `since ${f.time}, ${f.day} ${f.date}`;
-  $("history").innerHTML = entries.map(e=>{const g=fmt(e.ts);return `<li><span>${esc(e.name)}</span><span class="t">${g.day}, ${g.date}<br>${g.time}</span></li>`}).join("");
+  $("history").innerHTML = entries.slice(0,10).map(e=>{const g=fmt(e.ts);return `<li><span>${esc(e.name)}</span><span class="t">${g.day}, ${g.date}<br>${g.time}</span></li>`}).join("");
 }
 
 // ----- confirmation tick -----
