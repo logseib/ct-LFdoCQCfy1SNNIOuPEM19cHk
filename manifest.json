@@ -4,7 +4,7 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#d9d9d9",
+  "background_color": "#f2f2f2",
   "theme_color": "#1d3fa8",
   "icons": [
     {"src": "icon-nbd-180.png", "sizes": "180x180", "type": "image/png"},
