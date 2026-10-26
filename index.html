@@ -6,27 +6,28 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Card Tracker</title>
 <style>
-  :root{--bg:#f6f4ef;--ink:#1d1d1b;--muted:#77756f;--accent:#1f4fbf;--line:#ddd9cf}
+  :root{--bg:#efe9df;--ink:#16233f;--muted:#6f6a60;--accent:#1d3fa8;--warm:#d9622b;--line:#d6cfc2}
   *{box-sizing:border-box}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;background:var(--bg);color:var(--ink)}
-  main{max-width:460px;margin:0 auto;padding:28px 18px 40px}
-  h1{font-size:15px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 18px}
-  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
-  .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-  #holder{font-size:32px;font-weight:700;margin:6px 0 2px}
-  #since{color:var(--muted);font-size:14px}
-  button{width:100%;margin:16px 0 26px;padding:16px;font-size:17px;font-weight:600;border:0;border-radius:12px;background:var(--accent);color:#fff;cursor:pointer}
+  body{margin:0;font-family:Georgia,"Times New Roman",serif;background:var(--bg);color:var(--ink)}
+  main{max-width:440px;margin:0 auto;padding:44px 22px 48px}
+  h1{font:600 11px/1 -apple-system,Helvetica,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin:0 0 28px;border-bottom:1px solid var(--line);padding-bottom:12px}
+  .card{background:transparent;border:0;border-left:3px solid var(--warm);padding:4px 0 4px 18px}
+  .label{font:600 10px/1 -apple-system,Helvetica,sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:.18em}
+  #holder{font-size:44px;font-weight:400;margin:10px 0 4px;letter-spacing:-.01em}
+  #since{color:var(--muted);font-size:14px;font-style:italic}
+  button{width:100%;margin:16px 0 34px;padding:17px;font:600 15px -apple-system,Helvetica,sans-serif;letter-spacing:.06em;border:0;border-radius:2px;background:var(--accent);color:#fff;cursor:pointer}
+  button:active{background:var(--warm)}
   button:disabled{opacity:.5}
-  #history{list-style:none;margin:8px 0 0;padding:0;max-height:50vh;overflow-y:auto;border-top:1px solid var(--line)}
-  #history li{display:flex;justify-content:space-between;padding:11px 2px;border-bottom:1px solid var(--line);font-size:15px}
-  #history .t{color:var(--muted);font-size:13px;text-align:right}
-  #nameBox{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:20px}
-  #nameBox .card{width:100%;max-width:360px}
-  #nameBox input{width:100%;padding:12px;font-size:17px;border:1px solid var(--line);border-radius:10px;margin-top:10px}
-  #nameBox button{margin:14px 0 0}
-  .foot{font-size:12px;color:var(--muted);margin-top:18px;text-align:center}
-  .foot a{color:var(--muted)}
-  #mode{font-size:12px;color:#a35a00;margin-bottom:10px;display:none}
+  #history{list-style:none;margin:12px 0 0;padding:0;max-height:48vh;overflow-y:auto;border-top:1px solid var(--ink)}
+  #history li{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line);font-size:17px}
+  #history .t{color:var(--muted);font:12px/1.4 -apple-system,Helvetica,sans-serif;text-align:right}
+  #nameBox{position:fixed;inset:0;background:rgba(239,233,223,.94);display:none;align-items:center;justify-content:center;padding:24px}
+  #nameBox .card{width:100%;max-width:340px}
+  #nameBox input{width:100%;padding:12px 0;font:22px Georgia,serif;border:0;border-bottom:1px solid var(--ink);background:transparent;margin-top:14px;outline:none}
+  #nameBox button{margin:20px 0 0}
+  .foot{font:13px -apple-system,Helvetica,sans-serif;color:var(--muted);margin-top:18px}
+  .foot a{color:var(--warm)}
+  #mode{font:11px -apple-system,Helvetica,sans-serif;color:var(--warm);margin-bottom:14px;display:none}
 </style>
 </head>
 <body>
@@ -38,7 +39,7 @@
     <div id="holder">—</div>
     <div id="since">Loading…</div>
   </div>
-  <div class="foot" style="margin:14px 0 -4px;font-size:14px">You are <b id="me">?</b> · <a href="#" id="rename">not you?</a></div>
+  <div class="foot" style="margin:22px 0 -2px;font-size:14px">You are <b id="me">?</b> · <a href="#" id="rename">not you?</a></div>
   <button id="claim">I have the card now</button>
   <div class="label">History</div>
   <ul id="history"></ul>
