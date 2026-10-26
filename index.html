@@ -78,7 +78,7 @@
 <button id="help" aria-label="How to add to Home Screen">?</button>
 <div id="nameBox"><div class="card">
   <div class="label">What's your name?</div>
-  <div style="font:13px/1.4 -apple-system,Helvetica,sans-serif;color:var(--muted);margin:4px 0 2px">You only need to input this information once.</div>
+  <div style="font:13px/1.4 -apple-system,Helvetica,sans-serif;color:var(--muted);margin:4px 0 2px">You only need to input this information once, but you can change it later.</div>
   <input id="nameInput" maxlength="30" autocomplete="given-name" placeholder="First name">
   <button id="saveName">Save</button>
 </div></div>
@@ -130,7 +130,7 @@ function askName(){ $("nameBox").style.display="flex"; $("nameInput").value=myNa
 $("saveName").onclick = () => {
   const n = $("nameInput").value.trim();
   if(!n) return;
-  localStorage.setItem(NAME_KEY,n); $("me").textContent=n; tick($("saveName")); setTimeout(()=>{$("nameBox").style.display="none"},700);
+  localStorage.setItem(NAME_KEY,n); $("me").textContent=n; $("nameBox").style.display="none";
 };
 $("nameInput").addEventListener("keydown",e=>{if(e.key==="Enter")$("saveName").click()});
 $("rename").onclick = e => { e.preventDefault(); askName(); };
