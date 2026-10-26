@@ -31,6 +31,7 @@
   #history{list-style:none;margin:12px 0 0;padding:0;max-height:48vh;overflow-y:auto;border-top:1px solid var(--ink)}
   #history li{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line);font-size:17px}
   #history .cur{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:10px;background:#dbe4f7;color:#2f4f9e;font:600 12px/1.4 -apple-system,Helvetica,sans-serif;vertical-align:baseline;position:relative;top:-6px}
+  #history .edit{background:none;border:0;box-shadow:none;padding:0 6px 0 0;margin:0;width:auto;color:var(--warm);vertical-align:-1px;cursor:pointer}
   #history .t{color:var(--muted);font:12px/1.4 -apple-system,Helvetica,sans-serif;text-align:right}
   #nameBox{position:fixed;inset:0;background:rgba(242,242,242,.94);display:none;align-items:center;justify-content:center;padding:24px}
   #nameBox .card{width:100%;max-width:340px;border-left:0;padding-left:0}
@@ -118,12 +119,22 @@ function fmt(ms){
 }
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 
+
+// ----- editing your own recent entry (10 minutes) -----
+const MINE="cardTrackerMine", EDIT_MS=10*60*1000;
+function mine(){ try{return JSON.parse(localStorage.getItem(MINE)||"{}")}catch(e){return {}} }
+function remember(ref){ if(!ref||!ref.id) return; const m=mine(), now=Date.now(); for(const k in m) if(now-m[k]>EDIT_MS) delete m[k]; m[ref.id]=now; localStorage.setItem(MINE,JSON.stringify(m)); render(lastEntries); }
+function canEdit(e){ const t=mine()[e.id]; return !!(e.id && t && Date.now()-t<EDIT_MS); }
+let renameId=null;
+
+let lastEntries=[];
 function render(entries){ // newest first
+  lastEntries=entries;
   if(!entries.length){ $("holder").textContent="Nobody yet"; $("since").textContent="Tap the button when you have it."; $("history").innerHTML=""; return; }
   const cur = entries[0], f = fmt(cur.ts);
   $("holder").textContent = cur.name;
   $("since").textContent = `since ${f.time}, ${f.day} ${f.date}`;
-  $("history").innerHTML = entries.slice(0,10).map((e,i)=>{const g=fmt(e.ts);return `<li><span>${esc(e.name)}${i===0?'<span class="cur">Current</span>':''}</span><span class="t">${g.day}, ${g.date}<br>${g.time}</span></li>`}).join("");
+  $("history").innerHTML = entries.slice(0,10).map((e,i)=>{const g=fmt(e.ts);return `<li><span>${esc(e.name)}${i===0?'<span class="cur">Current</span>':''}</span><span class="t">${g.day}, ${g.date}<br>${canEdit(e)?`<button class="edit" data-id="${e.id}" aria-label="Edit name"><svg width="13" height="13" viewBox="0 0 16 16"><path d="M11.2 2.3l2.5 2.5-7.9 7.9-3.1.6.6-3.1z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg></button>`:''}${g.time}</span></li>`}).join("");
 }
 
 // ----- confirmation tick -----
@@ -155,15 +166,21 @@ if(demo){
   firebase.initializeApp(firebaseConfig);
   db = firebase.firestore();
   db.collection("claims").orderBy("ts","desc").limit(500).onSnapshot(snap=>{
-    render(snap.docs.map(d=>{const x=d.data();return {name:x.name, ts: x.ts ? x.ts.toMillis() : Date.now()}}));
+    render(snap.docs.map(d=>{const x=d.data();return {id:d.id, name:x.name, ts: x.ts ? x.ts.toMillis() : Date.now()}}));
   }, err=>{ $("since").textContent="Couldn't load: "+err.message; });
   window.addClaim = name => db.collection("claims").add({name, ts: firebase.firestore.FieldValue.serverTimestamp()});
 }
 
+$("history").addEventListener("click", e => { const b=e.target.closest(".edit"); if(!b) return; renameId=b.dataset.id; askName(); });
+$("saveName").addEventListener("click", async () => {
+  const n=myName(), id=renameId; if(!id || !n) return; renameId=null;
+  try{ await db.collection("claims").doc(id).update({name:n}); }
+  catch(err){ try{ remember(await addClaim(n)); }catch(e2){ alert("Couldn't save: "+e2.message); } }
+});
 $("claim").onclick = async () => {
   const n = myName(); if(!n){ askName(); return; }
   $("claim").disabled = true;
-  try{ await addClaim(n); tick($("claim")); } catch(e){ alert("Couldn't save: "+e.message); }
+  try{ remember(await addClaim(n)); tick($("claim")); } catch(e){ alert("Couldn't save: "+e.message); }
   setTimeout(()=>$("claim").disabled=false, 1500);
 };
 // ----- first-visit "Add to Home Screen" tip -----
@@ -187,17 +204,12 @@ $("claim").onclick = async () => {
 (function(){
   if(!new URLSearchParams(location.search).has("scan")) return;
   history.replaceState(null, "", location.pathname);
-  let renaming=false, hideT;
+  let hideT;
   const toast = n => { $("scanName").textContent=n; $("scanToast").style.display="flex"; clearTimeout(hideT); hideT=setTimeout(()=>$("scanToast").style.display="none",12000); };
   let lastRef=null;
-  const claimAs = async n => { try{ lastRef = await addClaim(n); tick($("claim")); toast(n); }catch(e){ alert("Couldn't save: "+e.message); } };
-  const renameLast = async n => { try{ if(lastRef && lastRef.update){ await lastRef.update({name:n}); } else { lastRef = await addClaim(n); } toast(n); }catch(e){ lastRef = await addClaim(n).catch(()=>null); toast(n); } };
+  const claimAs = async n => { try{ lastRef = await addClaim(n); remember(lastRef); tick($("claim")); toast(n); }catch(e){ alert("Couldn't save: "+e.message); } };
   $("scanX").onclick = () => { clearTimeout(hideT); $("scanToast").style.display="none"; };
-  $("scanRename").onclick = e => { e.preventDefault(); clearTimeout(hideT); $("scanToast").style.display="none"; renaming=true; askName(); };
-  $("saveName").addEventListener("click", () => {
-    const n=myName(); if(!n) return;
-    if(renaming){ renaming=false; renameLast(n); }
-  });
+  $("scanRename").onclick = e => { e.preventDefault(); clearTimeout(hideT); $("scanToast").style.display="none"; if(lastRef&&lastRef.id){ renameId=lastRef.id; } askName(); };
   if(myName()) claimAs(myName());
   else { const once=()=>{ if(!myName()) return; $("saveName").removeEventListener("click",once); claimAs(myName()); }; $("saveName").addEventListener("click",once); }
 })();
