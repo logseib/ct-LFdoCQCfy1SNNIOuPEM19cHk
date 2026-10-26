@@ -40,11 +40,11 @@
   #a2hs .row{display:flex;gap:10px}
   #a2hs .row button{margin:0;padding:11px;font-size:14px}
   #a2hs .row .ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
-  #a2hs ol{list-style:none;margin:-4px 0 14px;padding:0;counter-reset:s}
+  #a2hs ol{list-style:none;margin:-4px 0 0;padding:0;counter-reset:s}
   #a2hs li{display:flex;align-items:center;gap:10px;padding:6px 0;color:var(--ink);counter-increment:s}
   #a2hs li::before{content:counter(s);font-size:12px;color:var(--muted);width:10px}
   #a2hs .ic{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:#f1eee8;flex:none}
-  #a2hs .x{position:absolute;top:6px;right:10px;background:none;border:0;color:var(--muted);font-size:20px;width:auto;margin:0;padding:4px}
+  #a2hs .x{position:absolute;top:4px;right:8px;background:none;border:0;color:var(--ink);font-size:30px;line-height:1;width:auto;margin:0;padding:6px 8px}
 </style>
 </head>
 <body>
@@ -67,7 +67,6 @@
   <b>Keep this one tap away</b>
   <p id="a2hsText">Add it to your home screen in three taps:</p>
   <ol id="a2hsSteps"><li><span class="ic"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14" stroke="#1d3fa8" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Tap the <b>menu</b> button in Safari's toolbar</span></li><li><span class="ic"><svg width="20" height="20" viewBox="0 0 15 18"><path d="M7.5 1v10M4 4.5L7.5 1 11 4.5" stroke="#1d3fa8" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 7.5H2.5v9h10v-9H10" stroke="#1d3fa8" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Tap <b>Share</b></span></li><li><span class="ic"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="2.5" y="2.5" width="15" height="15" rx="3.5" stroke="#1d3fa8" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 6.5v7M6.5 10h7" stroke="#1d3fa8" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Tap <b>Add to Home Screen</b></span></li></ol>
-  <div class="row"><button id="a2hsDone">Got it</button><button class="ghost" id="a2hsLater">No thanks</button></div>
 </div>
 <div id="nameBox"><div class="card">
   <div class="label">What's your name?</div>
@@ -151,12 +150,9 @@ $("claim").onclick = async () => {
   if(standalone || localStorage.getItem(KEY)) return;
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
   let deferred=null;
-  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred=e; $("a2hsText").innerHTML="Add Card Tracker to your home screen so it opens like an app."; $("a2hsDone").textContent="Add"; $("a2hsSteps").style.display="none"; });
   if(!ios) $("a2hsSteps").style.display="none";
   if(!ios) $("a2hsText").innerHTML = "Open your browser menu and choose <b>Add to Home screen</b> or <b>Install app</b>.";
   const close = v => { localStorage.setItem(KEY,v); $("a2hs").style.display="none"; };
-  $("a2hsDone").onclick = async () => { if(deferred){ deferred.prompt(); await deferred.userChoice; deferred=null; } close("done"); };
-  $("a2hsLater").onclick = () => close("dismissed");
   $("a2hsX").onclick = () => close("dismissed");
   const show = () => { $("a2hs").style.display="block"; };
   // wait until the name prompt is out of the way
