@@ -176,6 +176,14 @@ $("claim").onclick = async () => {
   if(myName()) setTimeout(show, 800);
   else { const once = () => { if(!myName()) return; $("saveName").removeEventListener("click", once); if(!localStorage.getItem(KEY)) setTimeout(show, 600); }; $("saveName").addEventListener("click", once); }
 })();
+
+// ----- QR code on the card: ?scan opens and claims automatically -----
+(function(){
+  if(!new URLSearchParams(location.search).has("scan")) return;
+  history.replaceState(null, "", location.pathname);
+  if(myName()) $("claim").click();
+  else { const once=()=>{ if(!myName()) return; $("saveName").removeEventListener("click",once); setTimeout(()=>$("claim").click(),50); }; $("saveName").addEventListener("click",once); }
+})();
 </script>
 </body>
 </html>
