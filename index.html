@@ -61,8 +61,8 @@
 <div id="a2hs" role="dialog" aria-label="Add to Home Screen">
   <button class="x" id="a2hsX" aria-label="Close">×</button>
   <b>Keep this one tap away</b>
-  <p id="a2hsText">On iPhone, tap the Share button <span aria-hidden="true">⎙</span> in Safari, then <b>Add to Home Screen</b>.</p>
-  <div class="row"><button id="a2hsDone">Done</button><button class="ghost" id="a2hsLater">No thanks</button></div>
+  <p id="a2hsText">On iPhone, tap the Share button <svg aria-hidden="true" width="15" height="18" viewBox="0 0 15 18" style="vertical-align:-3px;margin:0 2px"><path d="M7.5 1v10M4 4.5L7.5 1 11 4.5" fill="none" stroke="#1d3fa8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 7.5H2.5v9h10v-9H10" fill="none" stroke="#1d3fa8" stroke-width="1.6" stroke-linejoin="round"/></svg> in Safari, then <b>Add to Home Screen</b>.</p>
+  <div class="row"><button id="a2hsDone">Got it</button><button class="ghost" id="a2hsLater">No thanks</button></div>
 </div>
 <div id="nameBox"><div class="card">
   <div class="label">What's your name?</div>
@@ -145,9 +145,11 @@ $("claim").onclick = async () => {
   const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   if(standalone || localStorage.getItem(KEY)) return;
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+  let deferred=null;
+  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred=e; $("a2hsText").innerHTML="Add Card Tracker to your home screen so it opens like an app."; $("a2hsDone").textContent="Add"; });
   if(!ios) $("a2hsText").innerHTML = "Open your browser menu and choose <b>Add to Home screen</b> or <b>Install app</b>.";
   const close = v => { localStorage.setItem(KEY,v); $("a2hs").style.display="none"; };
-  $("a2hsDone").onclick = () => close("done");
+  $("a2hsDone").onclick = async () => { if(deferred){ deferred.prompt(); await deferred.userChoice; deferred=null; } close("done"); };
   $("a2hsLater").onclick = () => close("dismissed");
   $("a2hsX").onclick = () => close("dismissed");
   const show = () => { $("a2hs").style.display="block"; };
