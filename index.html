@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Card Tracker</title>
+<style>
+  :root{--bg:#f6f4ef;--ink:#1d1d1b;--muted:#77756f;--accent:#1f4fbf;--line:#ddd9cf}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;background:var(--bg);color:var(--ink)}
+  main{max-width:460px;margin:0 auto;padding:28px 18px 40px}
+  h1{font-size:15px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 18px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
+  .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  #holder{font-size:32px;font-weight:700;margin:6px 0 2px}
+  #since{color:var(--muted);font-size:14px}
+  button{width:100%;margin:16px 0 26px;padding:16px;font-size:17px;font-weight:600;border:0;border-radius:12px;background:var(--accent);color:#fff;cursor:pointer}
+  button:disabled{opacity:.5}
+  #history{list-style:none;margin:8px 0 0;padding:0;max-height:50vh;overflow-y:auto;border-top:1px solid var(--line)}
+  #history li{display:flex;justify-content:space-between;padding:11px 2px;border-bottom:1px solid var(--line);font-size:15px}
+  #history .t{color:var(--muted);font-size:13px;text-align:right}
+  #nameBox{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;padding:20px}
+  #nameBox .card{width:100%;max-width:360px}
+  #nameBox input{width:100%;padding:12px;font-size:17px;border:1px solid var(--line);border-radius:10px;margin-top:10px}
+  #nameBox button{margin:14px 0 0}
+  .foot{font-size:12px;color:var(--muted);margin-top:18px;text-align:center}
+  .foot a{color:var(--muted)}
+  #mode{font-size:12px;color:#a35a00;margin-bottom:10px;display:none}
+</style>
+</head>
+<body>
+<main>
+  <h1>Who has the card</h1>
+  <div id="mode">Demo mode: Firebase isn't configured, so entries are saved on this device only.</div>
+  <div class="card">
+    <div class="label">Current holder</div>
+    <div id="holder">—</div>
+    <div id="since">Loading…</div>
+  </div>
+  <div class="foot" style="margin:14px 0 -4px;font-size:14px">You are <b id="me">?</b> · <a href="#" id="rename">not you?</a></div>
+  <button id="claim">I have the card now</button>
+  <div class="label">History</div>
+  <ul id="history"></ul>
+</main>
+
+<div id="nameBox"><div class="card">
+  <div class="label">What's your name?</div>
+  <input id="nameInput" maxlength="30" autocomplete="given-name" placeholder="First name">
+  <button id="saveName">Save</button>
+</div></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+// ===== 1. Paste your Firebase web config here =====
+const firebaseConfig = {
+  apiKey: "PASTE_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT",
+  appId: "PASTE_APP_ID"
+};
+// ==================================================
+
+const $ = id => document.getElementById(id);
+const NAME_KEY = "cardTrackerName";
+const demo = firebaseConfig.apiKey.startsWith("PASTE");
+let db;
+
+function fmt(ms){
+  const d = new Date(ms);
+  return {
+    day: d.toLocaleDateString(undefined,{weekday:"long"}),
+    date: d.toLocaleDateString(undefined,{month:"short",day:"numeric"}),
+    time: d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"})
+  };
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+function render(entries){ // newest first
+  if(!entries.length){ $("holder").textContent="Nobody yet"; $("since").textContent="Tap the button when you have it."; $("history").innerHTML=""; return; }
+  const cur = entries[0], f = fmt(cur.ts);
+  $("holder").textContent = cur.name;
+  $("since").textContent = `since ${f.time}, ${f.day} ${f.date}`;
+  $("history").innerHTML = entries.map(e=>{const g=fmt(e.ts);return `<li><span>${esc(e.name)}</span><span class="t">${g.day}, ${g.date}<br>${g.time}</span></li>`}).join("");
+}
+
+// ----- name handling -----
+function myName(){ return localStorage.getItem(NAME_KEY) }
+function askName(){ $("nameBox").style.display="flex"; $("nameInput").value=myName()||""; $("nameInput").focus(); }
+$("saveName").onclick = () => {
+  const n = $("nameInput").value.trim();
+  if(!n) return;
+  localStorage.setItem(NAME_KEY,n); $("me").textContent=n; $("nameBox").style.display="none";
+};
+$("nameInput").addEventListener("keydown",e=>{if(e.key==="Enter")$("saveName").click()});
+$("rename").onclick = e => { e.preventDefault(); askName(); };
+if(myName()) $("me").textContent=myName(); else askName();
+
+// ----- data -----
+if(demo){
+  $("mode").style.display="block";
+  const load=()=>JSON.parse(localStorage.getItem("cardTrackerDemo")||"[]");
+  render(load());
+  window.addEventListener("storage",()=>render(load()));
+  window.addClaim = async name => { const a=load(); a.unshift({name,ts:Date.now()}); localStorage.setItem("cardTrackerDemo",JSON.stringify(a)); render(a); };
+} else {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  db.collection("claims").orderBy("ts","desc").limit(500).onSnapshot(snap=>{
+    render(snap.docs.map(d=>{const x=d.data();return {name:x.name, ts: x.ts ? x.ts.toMillis() : Date.now()}}));
+  }, err=>{ $("since").textContent="Couldn't load: "+err.message; });
+  window.addClaim = name => db.collection("claims").add({name, ts: firebase.firestore.FieldValue.serverTimestamp()});
+}
+
+$("claim").onclick = async () => {
+  const n = myName(); if(!n){ askName(); return; }
+  $("claim").disabled = true;
+  try{ await addClaim(n); } catch(e){ alert("Couldn't save: "+e.message); }
+  setTimeout(()=>$("claim").disabled=false, 1500);
+};
+</script>
+</body>
+</html>
