@@ -32,6 +32,28 @@
   .tick{position:absolute;right:16px;top:50%;width:22px;height:22px;margin-top:-11px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.6);transition:opacity .25s,transform .25s;pointer-events:none}
   .tick.on{opacity:1;transform:scale(1)}
   button:disabled{opacity:.5}
+  .claimWrap{position:relative;margin:16px 0 34px}
+  .claimWrap #claim{margin:0}
+  #scanBtn{position:absolute;right:8px;top:50%;width:38px;height:38px;margin:-19px 0 0;padding:0;border-radius:9px;background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:background .2s}
+  #scanBtn:active{filter:none;background:rgba(255,255,255,.24)}
+  #scanBtn svg{position:absolute;left:50%;top:50%;transition:opacity .45s ease,transform .45s ease}
+  #scanBtn .qi{width:22px;height:22px;margin:-11px 0 0 -11px}
+  #scanBtn .ci{width:16px;height:16px;margin:-8px 0 0 -8px;opacity:0;transform:scale(.6)}
+  #scanBtn.done .qi{opacity:0;transform:scale(.7)}
+  #scanBtn.done .ci{opacity:1;transform:scale(1)}
+  #scanner{position:fixed;inset:0;z-index:20;background:#000;display:none;opacity:0;transition:opacity .3s ease;color:#fff;font:16px/1.4 -apple-system,Helvetica,sans-serif}
+  #scanner.show{opacity:1}
+  #scanner video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  #scanner .vf{position:absolute;left:50%;top:44%;width:min(66vw,260px);height:min(66vw,260px);transform:translate(-50%,-50%);border-radius:18px;box-shadow:0 0 0 200vmax rgba(0,0,0,.45);transition:opacity .3s}
+  #scanner .vf svg{position:absolute;inset:-2px;width:calc(100% + 4px);height:calc(100% + 4px);overflow:visible}
+  #scanner .vf path{stroke:#fff;stroke-width:3.5;fill:none;stroke-linecap:round;opacity:.92}
+  #scanner .vf.hit path{stroke:#9fd8bf}
+  #scanner .hint{position:absolute;left:24px;right:24px;top:calc(44% + min(33vw,130px) + 26px);text-align:center;color:rgba(255,255,255,.88)}
+  #scanner .msg{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:min(82vw,320px);text-align:center;display:none;color:rgba(255,255,255,.9)}
+  #scanner .msg b{display:block;font-size:18px;margin-bottom:8px;color:#fff}
+  #scanner.err .msg{display:block}
+  #scanner.err .vf,#scanner.err .hint{opacity:0}
+  #scanCancel{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom, 0px) + 30px);transform:translateX(-50%);width:auto;margin:0;padding:12px 30px;border-radius:24px;background:rgba(40,40,40,.62);color:#fff;font:500 16px -apple-system,Helvetica,sans-serif;letter-spacing:normal;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
   #history{list-style:none;margin:12px 0 0;padding:0;border-top:1px solid var(--ink)}
   #history li{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line);font-size:17px}
   #history .cur{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:10px;background:#dbe4f7;color:#2f4f9e;font:600 12px/1.4 -apple-system,Helvetica,sans-serif;vertical-align:baseline;position:relative;top:-3px}
@@ -181,7 +203,7 @@
     <div id="since">Loading…</div>
   </div>
   <div class="foot" style="margin:22px 0 -2px;font-size:14px">You are <b id="me">?</b> · <a href="#" id="rename">not you?</a></div>
-  <button id="claim">I have the card now</button>
+  <div class="claimWrap"><button id="claim">I have the card now</button><button id="scanBtn" type="button" aria-label="Scan the card's QR code"><svg class="qi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5V5.5A2.5 2.5 0 0 1 5.5 3H7.5M16.5 3h2A2.5 2.5 0 0 1 21 5.5v2M21 16.5v2a2.5 2.5 0 0 1-2.5 2.5h-2M7.5 21h-2A2.5 2.5 0 0 1 3 18.5v-2"/></g><g fill="currentColor"><rect x="6.6" y="6.6" width="4.4" height="4.4" rx=".9"/><rect x="13" y="6.6" width="4.4" height="4.4" rx=".9"/><rect x="6.6" y="13" width="4.4" height="4.4" rx=".9"/><rect x="13.9" y="13.9" width="2.6" height="2.6" rx=".6"/></g></svg><svg class="ci" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3l2.3 2.3 4.7-5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
   <div class="label">History</div>
   <ul id="history"></ul>
 </main>
@@ -194,6 +216,13 @@
 </div>
 <button id="help" aria-label="How to add to Home Screen">?</button>
 <div id="scanToast"><span><span class="ok">Success:</span> Logged as <b id="scanName"></b>.<br><a href="#" id="scanRename">Change name?</a></span><svg class="ring" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/></svg><button class="x" id="scanX" aria-label="Close">&times;</button></div>
+<div id="scanner" role="dialog" aria-label="Scan QR code">
+  <video id="scanVideo" playsinline muted autoplay></video>
+  <div class="vf" id="scanVf"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path vector-effect="non-scaling-stroke" d="M1 16V8A7 7 0 0 1 8 1h8M84 1h8a7 7 0 0 1 7 7v8M99 84v8a7 7 0 0 1-7 7h-8M16 99H8a7 7 0 0 1-7-7v-8"/></svg></div>
+  <div class="hint">Point at the QR code on the card</div>
+  <div class="msg" id="scanMsg"></div>
+  <button id="scanCancel" type="button">Cancel</button>
+</div>
 <div id="nameBox"><div class="card">
   <div class="label" id="nameLabel">What's your name or location?</div>
   <div id="nameNote" style="font:13px/1.4 -apple-system,Helvetica,sans-serif;color:var(--muted);margin:4px 0 2px">You only need to input this information once, but you can change it later.</div>
@@ -251,6 +280,8 @@ function render(entries){ // newest first
 
 // ----- confirmation tick -----
 function tick(btn){
+  const chip=$("scanBtn");
+  if(btn.id==="claim" && chip){ chip.classList.add("done"); btn.classList.remove("flash"); void btn.offsetWidth; btn.classList.add("flash"); clearTimeout(chip._h); chip._h=setTimeout(()=>{ chip.classList.remove("done"); btn.classList.remove("flash"); },4000); return; }
   let t=btn.querySelector(".tick");
   if(!t){t=document.createElement("span");t.className="tick";t.innerHTML='<svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.3l2.3 2.3 4.7-5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';btn.appendChild(t);}
   t.classList.add("on");btn.classList.remove("flash");void btn.offsetWidth;btn.classList.add("flash");clearTimeout(t._h);t._h=setTimeout(()=>{t.classList.remove("on");btn.classList.remove("flash")},5000);
@@ -314,8 +345,6 @@ $("claim").onclick = async () => {
 
 // ----- QR code on the card: ?scan opens and claims automatically -----
 (function(){
-  if(!new URLSearchParams(location.search).has("scan")) return;
-  history.replaceState(null, "", location.pathname);
   let hideT;
   const place = () => { const li=$("history").querySelector("li"), t=$("scanToast"); if(!li) return; if(t.parentNode!==document.body) document.body.appendChild(t); const r=li.getBoundingClientRect(), u=$("history").getBoundingClientRect(); t.style.left=u.left+"px"; t.style.width=u.width+"px"; t.style.top=(r.bottom+10)+"px"; };
   const toast = n => { const t=$("scanToast"); $("scanName").textContent=n; t.style.display="flex"; place(); t.classList.remove("go","out"); void t.offsetWidth; t.classList.add("go"); clearTimeout(hideT); hideT=setTimeout(()=>{ t.classList.add("out"); hideT=setTimeout(()=>{ t.style.display="none"; t.classList.remove("out"); },1000); },10000); };
@@ -325,8 +354,85 @@ $("claim").onclick = async () => {
   const claimAs = async n => { try{ lastRef = await addClaim(n); remember(lastRef); tick($("claim")); toast(n); }catch(e){ alert("Couldn't save: "+e.message); } };
   $("scanX").onclick = () => { clearTimeout(hideT); $("scanToast").style.display="none"; };
   $("scanRename").onclick = e => { e.preventDefault(); clearTimeout(hideT); $("scanToast").style.display="none"; if(lastRef&&lastRef.id){ renameId=lastRef.id; } askName(true); };
-  if(myName()) claimAs(myName());
-  else { const once=()=>{ if(!myName()) return; $("saveName").removeEventListener("click",once); claimAs(myName()); }; $("saveName").addEventListener("click",once); }
+  let waiting=false;
+  window.scanClaim = () => {
+    if(myName()) return claimAs(myName());
+    askName(); if(waiting) return; waiting=true;
+    const once=()=>{ if(!myName()) return; $("saveName").removeEventListener("click",once); waiting=false; claimAs(myName()); }; $("saveName").addEventListener("click",once);
+  };
+  if(!new URLSearchParams(location.search).has("scan")) return;
+  history.replaceState(null, "", location.pathname);
+  scanClaim();
+})();
+
+// ----- in-app QR scanner: our own code claims in place; anything else opens normally -----
+(function(){
+  const box=$("scanner"), video=$("scanVideo"), msg=$("scanMsg"), vf=$("scanVf");
+  let stream=null, running=false, timer=null, detector=null, canvas=null, ctx=null, busy=false, jsqrP=null;
+  const norm = p => p.replace(/index\.html$/,"").replace(/\/?$/,"/");
+  const isOurs = u => u.origin===location.origin && norm(u.pathname)===norm(location.pathname);
+  const loadJsQR = () => jsqrP || (jsqrP = new Promise((res,rej)=>{ if(window.jsQR) return res(); const s=document.createElement("script"); s.src="jsqr-1.4.0.min.js"; s.onload=()=>res(); s.onerror=()=>{ jsqrP=null; rej(new Error("Couldn't load the scanner.")); }; document.head.appendChild(s); }));
+  async function getDetector(){
+    if(detector!==null) return detector;
+    try{ if("BarcodeDetector" in window){ const f=await BarcodeDetector.getSupportedFormats(); if(f.includes("qr_code")) return detector=new BarcodeDetector({formats:["qr_code"]}); } }catch(e){}
+    return detector=false;
+  }
+  function stopCam(){ running=false; clearTimeout(timer); if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; } video.srcObject=null; }
+  function close(){ stopCam(); box.classList.remove("show"); setTimeout(()=>{ if(!box.classList.contains("show")){ box.style.display="none"; box.classList.remove("err"); vf.classList.remove("hit"); } },300); }
+  function fail(title, body){ stopCam(); $("scanCancel").textContent="Close"; msg.innerHTML="<b>"+esc(title)+"</b>"+esc(body); box.classList.add("err"); }
+  async function open(){
+    box.classList.remove("err"); vf.classList.remove("hit"); box.style.display="block"; void box.offsetWidth; box.classList.add("show");
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return fail("Camera isn't available here","This browser doesn't let web pages use the camera. You can still scan with your Camera app.");
+    try{
+      const [s] = await Promise.all([ navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"},audio:false}), getDetector().then(d=>d?null:loadJsQR()) ]);
+      if(!box.classList.contains("show")){ s.getTracks().forEach(t=>t.stop()); return; }
+      stream=s; video.srcObject=s; await video.play().catch(()=>{});
+      running=true; loop();
+    }catch(e){
+      const n=e && e.name;
+      if(n==="NotAllowedError"||n==="SecurityError") fail("Camera access is off","No problem. To scan here, tap the button again and choose Allow, or turn on camera access for this app in Settings.");
+      else if(n==="NotFoundError"||n==="OverconstrainedError") fail("No camera found","This device doesn't seem to have a camera we can use.");
+      else fail("Couldn't start the camera", (e && e.message) || "Please try again.");
+    }
+  }
+  async function scanOnce(){
+    if(!video.videoWidth) return null;
+    if(detector){ const r=await detector.detect(video); return r.length ? r[0].rawValue : null; }
+    const W=video.videoWidth, H=video.videoHeight, k=Math.min(1, 720/Math.max(W,H)), w=Math.round(W*k), h=Math.round(H*k);
+    if(!canvas){ canvas=document.createElement("canvas"); ctx=canvas.getContext("2d",{willReadFrequently:true}); }
+    if(canvas.width!==w||canvas.height!==h){ canvas.width=w; canvas.height=h; }
+    ctx.drawImage(video,0,0,w,h);
+    const r=window.jsQR(ctx.getImageData(0,0,w,h).data,w,h,{inversionAttempts:"dontInvert"});
+    return r ? r.data : null;
+  }
+  async function loop(){
+    if(!running) return;
+    if(!busy){
+      busy=true;
+      let text=null; try{ text=await scanOnce(); }catch(e){}
+      busy=false;
+      if(text && running) return handle(text);
+    }
+    timer=setTimeout(loop, 140);
+  }
+  let lastOther="";
+  function handle(text){
+    let u=null; try{ u=new URL(text.trim()); }catch(e){}
+    if(u && isOurs(u)){
+      running=false; vf.classList.add("hit");
+      setTimeout(()=>{ close(); window.scanClaim && window.scanClaim(); },220);
+      return;
+    }
+    if(u && /^https?:$/.test(u.protocol)){ running=false; vf.classList.add("hit"); stopCam(); location.href=u.href; return; }
+    // not a web link: show it quietly and keep scanning
+    if(text!==lastOther){ lastOther=text; box.querySelector(".hint").textContent="That code isn't a link: "+text.slice(0,80); }
+    timer=setTimeout(loop, 600);
+  }
+  $("scanBtn").addEventListener("click", e => { e.stopPropagation(); e.preventDefault(); box.querySelector(".hint").textContent="Point at the QR code on the card"; $("scanCancel").textContent="Cancel"; lastOther=""; open(); });
+  $("scanCancel").onclick = close;
+  document.addEventListener("visibilitychange", () => { if(document.hidden && box.style.display==="block") close(); });
+  addEventListener("pagehide", stopCam);
+  window.__scanner = { isOurs:t=>isOurs(new URL(t)), open, close };
 })();
 </script>
 <script>
