@@ -150,7 +150,7 @@ function render(entries){ // newest first
 function tick(btn){
   let t=btn.querySelector(".tick");
   if(!t){t=document.createElement("span");t.className="tick";t.innerHTML='<svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.3l2.3 2.3 4.7-5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';btn.appendChild(t);}
-  t.classList.add("on");btn.classList.remove("flash");void btn.offsetWidth;btn.classList.add("flash");clearTimeout(t._h);t._h=setTimeout(()=>{t.classList.remove("on");btn.classList.remove("flash")},2400);
+  t.classList.add("on");btn.classList.remove("flash");void btn.offsetWidth;btn.classList.add("flash");clearTimeout(t._h);t._h=setTimeout(()=>{t.classList.remove("on");btn.classList.remove("flash")},5000);
 }
 // ----- name handling -----
 function myName(){ return localStorage.getItem(NAME_KEY) }
