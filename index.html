@@ -25,10 +25,10 @@
   button{width:100%;margin:16px 0 34px;padding:17px;font:600 15px -apple-system,Helvetica,sans-serif;letter-spacing:.06em;border:0;border-radius:2px;background:var(--accent);color:#fff;cursor:pointer}
   button{position:relative}
   button:active{filter:brightness(.88)}
-  #claim{background:#2f7a52}
+  #claim{background:#2b7a5e}
   #claim:disabled{opacity:1}
   #claim.flash{animation:flash 2.4s ease-in forwards}
-  @keyframes flash{from{background:#97bca8}to{background:#2f7a52}}
+  @keyframes flash{from{background:#97bcb0}to{background:#2b7a5e}}
   .tick{position:absolute;right:16px;top:50%;width:22px;height:22px;margin-top:-11px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.6);transition:opacity .25s,transform .25s;pointer-events:none}
   .tick.on{opacity:1;transform:scale(1)}
   button:disabled{opacity:.5}
@@ -55,7 +55,7 @@
   #scanToast .ring circle{stroke:var(--muted);stroke-width:2;fill:none;stroke-dasharray:44;stroke-dashoffset:0}
   #scanToast.go .ring circle{animation:cd 10s linear forwards}
   @keyframes cd{to{stroke-dashoffset:44}}
-  #scanToast .ok{color:#2f7a52;font-weight:600}
+  #scanToast .ok{color:#2b7a5e;font-weight:600}
   #scanToast a{color:var(--warm)}
   #scanToast .x{margin-left:0;background:none;border:0;box-shadow:none;padding:0 2px;width:auto;color:var(--muted);font-size:20px;line-height:1;cursor:pointer}
   #help{position:fixed;right:16px;bottom:16px;width:40px;height:40px;border-radius:50%;margin:0;padding:0;background:rgba(214,214,214,.8);color:#555;border:0;box-shadow:none;font:600 19px/40px -apple-system,Helvetica,sans-serif;z-index:4;cursor:pointer}
