@@ -80,7 +80,9 @@
   #scanToast .ok{color:#2b7a5e;font-weight:600}
   #scanToast a{color:var(--warm)}
   #scanToast .x{margin-left:0;background:none;border:0;box-shadow:none;padding:0 2px;width:auto;color:var(--muted);font-size:20px;line-height:1;cursor:pointer}
-  #help{position:fixed;right:16px;bottom:16px;width:40px;height:40px;border-radius:50%;margin:0;padding:0;background:rgba(214,214,214,.8);color:#555;border:0;box-shadow:none;font:600 19px/40px -apple-system,Helvetica,sans-serif;z-index:4;cursor:pointer}
+  #help{position:fixed;right:16px;bottom:16px;width:40px;height:40px;border-radius:50%;margin:0;padding:0;background:rgba(214,214,214,.8);color:#555;border:0;box-shadow:none;display:flex;align-items:center;justify-content:center;z-index:4;cursor:pointer}
+  #help svg{display:block;width:22px;height:22px}
+  #help svg *{stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
   #a2hs b{font-size:15px}
   #a2hs p{margin:6px 0 12px;color:var(--muted)}
   #a2hs .row{display:flex;gap:10px}
@@ -214,7 +216,7 @@
   <p id="a2hsText">Add it to your home screen in three taps:</p>
   <ol id="a2hsSteps"><li><span class="ic"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14" stroke="#555555" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Tap the <b>menu</b> button in Safari's toolbar</span></li><li><span class="ic"><svg width="20" height="20" viewBox="0 0 15 18"><path d="M7.5 1v10M4 4.5L7.5 1 11 4.5" stroke="#555555" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 7.5H2.5v9h10v-9H10" stroke="#555555" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Tap <b>Share</b></span></li><li><span class="ic"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="2.5" y="2.5" width="15" height="15" rx="3.5" stroke="#555555" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 6.5v7M6.5 10h7" stroke="#555555" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Tap <b>Add to Home Screen</b></span></li></ol>
 </div>
-<button id="help" aria-label="How to add to Home Screen">?</button>
+<button id="help" aria-label="Add to Home Screen"></button>
 <div id="scanToast"><span><span class="ok">Success:</span> Logged as <b id="scanName"></b>.<br><a href="#" id="scanRename">Change name?</a></span><svg class="ring" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/></svg><button class="x" id="scanX" aria-label="Close">&times;</button></div>
 <div id="scanner" role="dialog" aria-label="Scan QR code">
   <video id="scanVideo" playsinline muted autoplay></video>
@@ -331,14 +333,25 @@ $("claim").onclick = async () => {
   const KEY="cardTrackerA2HS";
   const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+  const mobile = ios || /android|mobi/i.test(navigator.userAgent) || (window.matchMedia("(pointer:coarse)").matches && navigator.maxTouchPoints>0);
+  const mac = /mac/i.test(navigator.platform||"") || /Macintosh/.test(navigator.userAgent);
+  const ICON_ADD = '<svg viewBox="0 0 22 22" aria-hidden="true"><rect x="3" y="3" width="16" height="16" rx="4.6"/><path d="M11 7.4v7.2M7.4 11h7.2"/></svg>';
+  const ICON_BOOK = '<svg viewBox="0 0 22 22" aria-hidden="true"><path d="M11 6.2C9.3 4.9 6.6 4.4 3.2 4.6v12.2c3.4-.2 6.1.3 7.8 1.6 1.7-1.3 4.4-1.8 7.8-1.6V4.6c-3.4-.2-6.1.3-7.8 1.6zM11 6.2v12.2"/></svg>';
   if(!ios) $("a2hsSteps").style.display="none";
   if(!ios) $("a2hsText").innerHTML = "Open your browser menu and choose <b>Add to Home screen</b> or <b>Install app</b>.";
+  if(mobile){ $("help").innerHTML = ICON_ADD; }
+  else {
+    $("help").innerHTML = ICON_BOOK; $("help").setAttribute("aria-label","Bookmark this page");
+    $("a2hs").setAttribute("aria-label","Bookmark this page");
+    $("a2hs").querySelector(".a2hsHead b").textContent = "Bookmark Card Tracker";
+    $("a2hsText").innerHTML = "Press <b>"+(mac?"⌘D":"Ctrl+D")+"</b> to bookmark this page.<br>In Safari, choose <b>Favorites</b> to keep it in your favorites bar.";
+  }
   const close = v => { localStorage.setItem(KEY,v); $("a2hs").style.display="none"; };
   $("a2hsX").onclick = () => close("dismissed");
   const show = () => { $("a2hs").style.display="block"; };
   if(standalone){ $("help").style.display="none"; return; }
   $("help").onclick = show;
-  if(standalone || localStorage.getItem(KEY)) return;
+  if(standalone || !mobile || localStorage.getItem(KEY)) return;
   // wait until the name prompt is out of the way
   if(myName()) setTimeout(show, 800);
   else { const once = () => { if(!myName()) return; $("saveName").removeEventListener("click", once); if(!localStorage.getItem(KEY)) setTimeout(show, 600); }; $("saveName").addEventListener("click", once); }
