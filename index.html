@@ -154,7 +154,7 @@ function tick(btn){
 }
 // ----- name handling -----
 function myName(){ return localStorage.getItem(NAME_KEY) }
-function askName(editing){ $("nameNote").style.display=editing?"none":""; $("nameLabel").textContent=editing?"Edit name/location":"What's your name or location?"; $("nameBox").style.display="flex"; $("nameInput").value=myName()||""; $("nameInput").focus(); }
+function askName(editing){ $("nameNote").style.display=(editing||myName())?"none":""; $("nameLabel").textContent=editing?"Edit name/location":"What's your name or location?"; $("nameBox").style.display="flex"; $("nameInput").value=myName()||""; $("nameInput").focus(); }
 $("saveName").onclick = () => {
   const n = $("nameInput").value.trim();
   if(!n) return;
