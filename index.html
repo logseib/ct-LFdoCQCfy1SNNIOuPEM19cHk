@@ -493,6 +493,11 @@ $("claim").onclick = async () => {
   fitName();
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitName);
   if(svg&&window.PointerEvent){
+    // idle auto-flip: front 10s -> back, back 8s -> front; any interaction resets
+    var idleT;
+    function armIdle(){clearTimeout(idleT);idleT=setTimeout(function(){if(!document.hidden)flip();armIdle();},fTo>0?8000:10000);}
+    ['pointerdown','keydown','scroll','touchstart','wheel'].forEach(function(t){window.addEventListener(t,function(){setTimeout(armIdle,0);},{passive:true,capture:true});});
+    armIdle();
     svg.addEventListener('pointerdown',function(e){
       if(e.button>0)return;
       e.preventDefault();
