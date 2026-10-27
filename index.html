@@ -338,11 +338,11 @@ $("claim").onclick = async () => {
   var U=480/184, TAU=Math.PI*2, t0=null, last=null; // U = SVG units per CSS px (refreshed on press)
   function ease(x){return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2}
   // --- tug state (CSS px) ---
-  var MAX=28, ROT=4, K=150, C=12.2;       // band reach 28px, 4deg max tilt; spring w~12.2 rad/s, zeta~0.5 -> ~16% then ~3% overshoot, settles ~0.8-0.9s
+  var MAX=45, ROT=5, K=150, C=12.2;       // band: offset=45*tanh(d/45) (near 1:1 when small, hard falloff when far), up to 5deg tilt on the same curve; spring w~12.2 rad/s, zeta~0.5 -> ~16% then ~3% overshoot, settles ~0.8-0.9s
   var ox=0, oy=0, vx=0, vy=0, held=false, pid=null, sx=0, sy=0, lx=0, ly=0, lt=0, fvx=0, fvy=0;
   function band(d){return MAX*Math.tanh(d/MAX)}
   // --- flip state: tap (<6px, <300ms) turns the card over around its vertical axis ---
-  var FLIP_MS=700, fa=0, fFrom=0, fTo=0, fStart=null, fDur=FLIP_MS, downX=0, downY=0, downT=0, moved=0;
+  var BACK_GROW=.2, FLIP_MS=700, fa=0, fFrom=0, fTo=0, fStart=null, fDur=FLIP_MS, downX=0, downY=0, downT=0, moved=0;
   function easeIO(x){return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2}
   function flip(){
     fFrom=fa; fTo=fTo>0?0:Math.PI; fStart=null;
@@ -433,11 +433,12 @@ $("claim").onclick = async () => {
     if(isBack!==(back.getAttribute('visibility')==='visible')){back.setAttribute('visibility',isBack?'visible':'hidden');front.setAttribute('visibility',isBack?'hidden':'visible');}
     flipG.setAttribute('transform',fa===0?'':'translate(200 126) skewY('+(-12*fs*fc).toFixed(3)+') scale('+Math.max(.002,Math.abs(fc)).toFixed(4)+' 1) translate(-200 -126)');
     fshade.setAttribute('opacity',(.38*fs).toFixed(3));
-    card.setAttribute('transform','translate('+tx.toFixed(2)+' '+ty.toFixed(2)+') rotate('+tr.toFixed(3)+' 200 126)');
+    var S=1+BACK_GROW*fa/Math.PI;                   // back side shows 20% bigger; fa is already eased, so the size tweens with the flip
+    card.setAttribute('transform','translate('+tx.toFixed(2)+' '+ty.toFixed(2)+')'+(S!==1?' translate(200 126) scale('+S.toFixed(4)+') translate(-200 -126)':'')+' rotate('+tr.toFixed(3)+' 200 126)');
     // shadow: float lift plus tug lift (pull up = smaller/fainter, push down = a touch bigger/darker)
     var tl=-oy/MAX+.8*fs;                           // tug + flip lift
     var s=Math.max(.7,Math.min(1.12,1-.1*k*lift-.14*tl));
-    sh.setAttribute('transform','translate('+(200+tx*.6).toFixed(2)+' 312) scale('+s.toFixed(4)+' '+s.toFixed(4)+') translate(-200 -312)');
+    sh.setAttribute('transform','translate('+(200+tx*.6).toFixed(2)+' '+(312+160*(S-1)).toFixed(2)+') scale('+(s*S).toFixed(4)+' '+(s*S).toFixed(4)+') translate(-200 -312)');
     sh.setAttribute('opacity',Math.max(.35,Math.min(1,1-.35*k*lift-.3*tl)).toFixed(3));
     // light sheen: one slow pass every 9s
     var c=(t%9)/2.2;
