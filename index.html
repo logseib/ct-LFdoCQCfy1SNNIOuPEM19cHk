@@ -84,6 +84,8 @@
   }
   .hero{display:flex;justify-content:center;margin:11px 0 30px;--heroShade:#1d2a22}
   .hero svg{display:block;overflow:visible}
+  #heroSvg{touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;-webkit-user-drag:none}
+  #heroSvg.tug{cursor:grabbing}
   #hcShade stop{stop-color:var(--heroShade)}
   @media (prefers-color-scheme: dark){.hero{--heroShade:#000}}
 </style>
@@ -99,10 +101,18 @@
 <linearGradient id="hcChip" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eedca4"/><stop offset=".5" stop-color="#cfae5e"/><stop offset="1" stop-color="#a98a45"/></linearGradient>
 <linearGradient id="hcInk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#faf6ec"/><stop offset="1" stop-color="#e2dac9"/></linearGradient>
 <radialGradient id="hcShade"><stop offset="0" stop-opacity=".34"/><stop offset=".55" stop-opacity=".14"/><stop offset="1" stop-opacity="0"/></radialGradient>
+<linearGradient id="hcGB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#21503a"/><stop offset=".55" stop-color="#153d2a"/><stop offset="1" stop-color="#0c2a1b"/></linearGradient>
+<linearGradient id="hcMag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9d2bf"/><stop offset=".45" stop-color="#bdb59f"/><stop offset="1" stop-color="#a59d88"/></linearGradient>
+<linearGradient id="hcSig" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f3eddc"/><stop offset="1" stop-color="#e4dcc6"/></linearGradient>
+<pattern id="hcHatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="6" height="6" fill="none"/><path d="M0 0 V6" stroke="#cdbf9c" stroke-opacity=".55" stroke-width="1.4"/></pattern>
+<linearGradient id="hcHolo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f1ea"/><stop offset=".35" stop-color="#cfd8e6"/><stop offset=".6" stop-color="#e9dcc8"/><stop offset="1" stop-color="#b9c4c9"/></linearGradient>
+<clipPath id="hcClipB"><rect width="400" height="252" rx="19"/></clipPath>
 </defs>
 <ellipse id="heroShadow" cx="200" cy="312" rx="190" ry="20" fill="url(#hcShade)"/>
 <g id="heroCard" transform="rotate(7 200 126)">
+<g id="heroFlip">
 <rect x="-1" y="3" width="402" height="252" rx="20" fill="#000" opacity=".16"/>
+<g id="heroFront">
 <g clip-path="url(#hcClip)">
 <rect width="400" height="252" fill="url(#hcG)"/>
 <g stroke="#4f9a6d" stroke-opacity=".5" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none">
@@ -126,6 +136,41 @@
 <path d="M220.0 45.0 L220.1 45.2 L220.2 45.4 L220.3 45.6 L220.4 45.8 L220.4 46.1 L220.4 46.3 L220.4 46.6 L220.4 46.9 L220.3 47.2 L220.2 47.5 L220.1 47.7 L219.9 48.0 L219.7 48.3 L219.5 48.5 L219.2 48.8 L218.9 49.0 L218.6 49.2 L218.3 49.3 L217.9 49.5 L217.5 49.6 L217.1 49.6 L216.7 49.7 L216.3 49.7 L215.8 49.6 L215.4 49.5 L214.9 49.4 L214.5 49.2 L214.1 49.0 L213.6 48.8 L213.2 48.5 L212.8 48.1 L212.5 47.7 L212.2 47.3 L211.9 46.9 L211.6 46.4 L211.4 45.8 L211.2 45.3 L211.1 44.7 L211.0 44.1 L211.0 43.5 L211.0 42.9 L211.1 42.3 L211.2 41.6 L211.4 41.0 L211.7 40.4 L212.0 39.8 L212.3 39.2 L212.8 38.7 L213.2 38.1 L213.8 37.6 L214.3 37.2 L214.9 36.8 L215.6 36.4 L216.3 36.1 L217.0 35.9 L217.8 35.7 L218.6 35.6 L219.4 35.6 L220.2 35.6 L221.0 35.7 L221.8 35.9 L222.7 36.1 L223.5 36.4 L224.2 36.8 L225.0 37.2 L225.7 37.8 L226.4 38.4 L227.0 39.0 L227.6 39.7 L228.1 40.5 L228.6 41.3 L229.0 42.2 L229.3 43.1 L229.6 44.0 L229.7 45.0 L229.8 46.0 L229.8 47.0 L229.7 48.0 L229.6 49.0 L229.3 50.0 L229.0 51.0 L228.5 52.0 L228.0 52.9 L227.4 53.8 L226.7 54.7 L226.0 55.5 L225.1 56.2 L224.2 56.9 L223.3 57.5 L222.2 58.0 L221.2 58.5 L220.0 58.8 L218.9 59.0 L217.7 59.2 L216.5 59.3 L215.3 59.2 L214.1 59.1 L212.9 58.8 L211.7 58.4 L210.5 58.0 L209.4 57.4 L208.3 56.7 L207.2 56.0 L206.3 55.1 L205.4 54.2 L204.5 53.2 L203.8 52.1 L203.1 50.9 L202.5 49.7 L202.1 48.4 L201.7 47.1 L201.5 45.7 L201.3 44.3 L201.3 42.9 L201.4 41.5 L201.7 40.1 L202.0 38.7 L202.5 37.3 L203.1 36.0 L203.8 34.7 L204.6 33.4 L205.5 32.3 L206.5 31.2 L207.7 30.1 L208.9 29.2 L210.2 28.4 L211.6 27.7 L213.0 27.1 L214.5 26.6 L216.0 26.2 L217.6 26.0 L219.2 25.9 L220.8 25.9 L222.4 26.1 L224.0 26.4 L225.6 26.9 L227.2 27.5 L228.7 28.2 L230.1 29.0 L231.5 30.0 L232.8 31.1 L234.0 32.3 L235.1 33.6 L236.1 35.0 L237.0 36.5 L237.8 38.1 L238.4 39.8 L238.9 41.5 L239.3 43.2 L239.5 45.0 L239.5 46.8 L239.4 48.6 L239.2 50.4 L238.8 52.2 L238.2 54.0 L237.5 55.7 L236.6 57.4 L235.6 59.0 L234.5 60.5 L233.2 61.9 L231.8 63.2 L230.3 64.5 L228.7 65.5 L227.0 66.5 L225.2 67.3 L223.4 67.9 L221.5 68.4 L219.5 68.8 L217.5 68.9 L215.5 68.9 L213.5 68.8 L211.5 68.4 L209.5 67.9 L207.5 67.3 L205.6 66.4 L203.8 65.4 L202.1 64.3 L200.4 62.9 L198.9 61.5 L197.5 59.9" fill="none" stroke="url(#hcInk)" stroke-width="4.5" stroke-linecap="round"/>
 <text x="252" y="58" font-family="-apple-system,Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="600" font-size="38" letter-spacing="1" fill="url(#hcInk)">NB|AZ</text>
 <path transform="translate(250 141) scale(5.4)" fill="url(#hcInk)" d="M9.112 8.262L5.97 15.758H3.92L2.374 9.775c-.094-.368-.175-.503-.461-.658C1.447 8.864.677 8.627 0 8.479l.046-.217h3.3a.904.904 0 01.894.764l.817 4.338 2.018-5.102zm8.033 5.049c.008-1.979-2.736-2.088-2.717-2.972.006-.269.262-.555.822-.628a3.66 3.66 0 011.913.336l.34-1.59a5.207 5.207 0 00-1.814-.333c-1.917 0-3.266 1.02-3.278 2.479-.012 1.079.963 1.68 1.698 2.04.756.367 1.01.603 1.006.931-.005.504-.602.725-1.16.734-.975.015-1.54-.263-1.992-.473l-.351 1.642c.453.208 1.289.39 2.156.398 2.037 0 3.37-1.006 3.377-2.564m5.061 2.447H24l-1.565-7.496h-1.656a.883.883 0 00-.826.55l-2.909 6.946h2.036l.405-1.12h2.488zm-2.163-2.656l1.02-2.815.588 2.815zm-8.16-4.84l-1.603 7.496H8.34l1.605-7.496z"/>
+</g>
+<g id="heroBack" visibility="hidden">
+<g clip-path="url(#hcClipB)">
+<rect width="400" height="252" fill="url(#hcGB)"/>
+<g transform="matrix(-1 0 0 1 400 0)" stroke="#4f9a6d" stroke-opacity=".26" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+<path d="M-10 40 L120 -10 L200 126 L120 262 L-10 210"/>
+<path d="M200 126 L290 -10 M200 126 L290 262 M200 126 L410 126"/>
+<path d="M120 -10 L60 126 L120 262 M60 126 L-10 126"/>
+<path d="M290 -10 L340 70 L410 20 M290 262 L340 182 L410 232 M340 70 L340 182"/>
+</g>
+<rect y="30" width="400" height="44" fill="url(#hcMag)"/>
+<rect y="30" width="400" height="1.5" fill="#fff" opacity=".35"/>
+<rect y="72.5" width="400" height="1.5" fill="#000" opacity=".18"/>
+<rect width="400" height="252" fill="url(#hcGloss)"/>
+<rect id="heroSweepB" x="-200" y="-200" width="800" height="652" fill="url(#hcSweep)" opacity="0"/>
+</g>
+<rect x="1" y="1" width="398" height="250" rx="18" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="2"/>
+<g font-family="-apple-system,Helvetica Neue,Helvetica,Arial,sans-serif" fill="#e9e3d3">
+<text x="24" y="20" font-size="9" font-weight="600" letter-spacing="1.2" opacity=".5">NATIONAL BANK OF ARIZONA</text>
+<text x="376" y="20" font-size="9" font-weight="600" letter-spacing="1.2" opacity=".5" text-anchor="end">BUSINESS DEBIT</text>
+<rect x="24" y="92" width="236" height="30" rx="2.5" fill="url(#hcSig)"/>
+<rect x="24" y="92" width="236" height="30" rx="2.5" fill="url(#hcHatch)"/>
+<text x="25" y="134" font-size="7" letter-spacing=".8" opacity=".42">AUTHORIZED SIGNATURE · NOT VALID UNLESS SIGNED</text>
+<text x="25" y="160" font-size="9" font-weight="600" letter-spacing="1.6" opacity=".55">CURRENT HOLDER</text>
+<text id="heroNameSh" x="25" y="189.5" font-size="24" font-weight="600" letter-spacing="2" fill="#03120a" opacity=".55"></text>
+<text id="heroName" x="25" y="188" font-size="24" font-weight="600" letter-spacing="2" fill="url(#hcInk)"></text>
+<text x="25" y="230" font-size="9" letter-spacing=".8" opacity=".5">nbarizona.com</text>
+</g>
+<g transform="translate(316 176) scale(1.25)">
+<path d="M2 24 C9 21 15 22 20 26 C21 15 27 6 39 1 C35 9 33 17 29 25 C33 25 37 27 40 31 C32 31 26 33 20 34 C13 35 6 31 2 24 Z" fill="url(#hcHolo)" opacity=".85"/>
+<path d="M20 26 C24 27 27 29 29 25" fill="none" stroke="#8f9aa3" stroke-opacity=".5" stroke-width="1"/>
+</g>
+</g>
+<rect id="heroFlipShade" width="400" height="252" rx="19" fill="#000" opacity="0"/>
+</g>
 </g>
 </svg></div>
   <h1>Who has the card?</h1>
@@ -286,29 +331,122 @@ $("claim").onclick = async () => {
 </script>
 <script>
 // Hero card float (plays regardless of Reduce Motion, per Logan): redraws the vector each frame (no bitmap scaling), so edges stay sharp while it moves.
+// Tug: press-and-drag pulls the card on a rubber band (tanh resistance); on release a damped spring brings it home. Drag offset is added on top of the float.
 (function(){
-  var card=document.getElementById('heroCard'),sh=document.getElementById('heroShadow'),sw=document.getElementById('heroSweep'),gr=document.getElementById('hcSweep');
+  var svg=document.getElementById('heroSvg'),card=document.getElementById('heroCard'),flipG=document.getElementById('heroFlip'),front=document.getElementById('heroFront'),back=document.getElementById('heroBack'),fshade=document.getElementById('heroFlipShade'),swB=document.getElementById('heroSweepB'),nm=document.getElementById('heroName'),nmS=document.getElementById('heroNameSh'),holder=document.getElementById('holder'),sh=document.getElementById('heroShadow'),sw=document.getElementById('heroSweep'),gr=document.getElementById('hcSweep');
   if(!card||!window.requestAnimationFrame)return;
-  var U=3, TAU=Math.PI*2, t0=null; // U = SVG units per CSS px
+  var U=480/184, TAU=Math.PI*2, t0=null, last=null; // U = SVG units per CSS px (refreshed on press)
   function ease(x){return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2}
+  // --- tug state (CSS px) ---
+  var MAX=28, ROT=4, K=150, C=12.2;       // band reach 28px, 4deg max tilt; spring w~12.2 rad/s, zeta~0.5 -> ~16% then ~3% overshoot, settles ~0.8-0.9s
+  var ox=0, oy=0, vx=0, vy=0, held=false, pid=null, sx=0, sy=0, lx=0, ly=0, lt=0, fvx=0, fvy=0;
+  function band(d){return MAX*Math.tanh(d/MAX)}
+  // --- flip state: tap (<6px, <300ms) turns the card over around its vertical axis ---
+  var FLIP_MS=700, fa=0, fFrom=0, fTo=0, fStart=null, fDur=FLIP_MS, downX=0, downY=0, downT=0, moved=0;
+  function easeIO(x){return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2}
+  function flip(){
+    fFrom=fa; fTo=fTo>0?0:Math.PI; fStart=null;
+    fDur=Math.max(250,FLIP_MS*Math.abs(fTo-fFrom)/Math.PI);
+  }
+  // cardholder name on the back: top history name, ALL CAPS, shrinks to fit
+  var NAME_W=270, NAME_PX=24, NAME_MIN=11;
+  function fitName(){
+    if(!nm||!holder)return;
+    var t=(holder.textContent||'').trim(); if(/^(—|-|nobody yet)$/i.test(t))t='';
+    t=t.toUpperCase();
+    [nm,nmS].forEach(function(el){el.textContent=t;el.setAttribute('font-size',NAME_PX);el.removeAttribute('textLength');el.removeAttribute('lengthAdjust');el.setAttribute('letter-spacing','2')});
+    if(!t)return;
+    var w=0; try{w=nm.getComputedTextLength()}catch(_){}
+    if(w>NAME_W){
+      var fs=Math.max(NAME_MIN,NAME_PX*NAME_W/w), ls=Math.max(.5,2*fs/NAME_PX);
+      [nm,nmS].forEach(function(el){el.setAttribute('font-size',fs.toFixed(2));el.setAttribute('letter-spacing',ls.toFixed(2))});
+      try{w=nm.getComputedTextLength()}catch(_){}
+      if(w>NAME_W)[nm,nmS].forEach(function(el){el.setAttribute('textLength',NAME_W);el.setAttribute('lengthAdjust','spacingAndGlyphs')});
+    }
+  }
+  if(holder&&window.MutationObserver){new MutationObserver(fitName).observe(holder,{childList:true,characterData:true,subtree:true});}
+  fitName();
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitName);
+  if(svg&&window.PointerEvent){
+    svg.addEventListener('pointerdown',function(e){
+      if(e.button>0)return;
+      e.preventDefault();
+      try{svg.setPointerCapture(e.pointerId)}catch(_){}
+      var r=svg.getBoundingClientRect(); if(r.width)U=480/r.width;
+      held=true; pid=e.pointerId; svg.classList.add('tug');
+      downX=e.clientX; downY=e.clientY; downT=performance.now(); moved=0;
+      // start from wherever the card currently is so grabbing mid-bounce doesn't jump
+      sx=e.clientX-MAX*Math.atanh(Math.max(-.999,Math.min(.999,ox/MAX)));
+      sy=e.clientY-MAX*Math.atanh(Math.max(-.999,Math.min(.999,oy/MAX)));
+      lx=ox; ly=oy; lt=performance.now(); fvx=fvy=0; vx=vy=0;
+    });
+    svg.addEventListener('pointermove',function(e){
+      if(!held||e.pointerId!==pid)return;
+      e.preventDefault();
+      moved=Math.max(moved,Math.hypot(e.clientX-downX,e.clientY-downY));
+      ox=band(e.clientX-sx); oy=band(e.clientY-sy);
+      var n=performance.now(), dt=Math.max(.008,(n-lt)/1000);
+      fvx=.7*fvx+.3*(ox-lx)/dt; fvy=.7*fvy+.3*(oy-ly)/dt; lx=ox; ly=oy; lt=n;
+    });
+    function release(e){
+      if(!held||(e&&e.pointerId!==pid))return;
+      held=false; pid=null; svg.classList.remove('tug');
+      if(e&&e.type==='pointerup'){moved=Math.max(moved,Math.hypot(e.clientX-downX,e.clientY-downY));}
+      if(e&&e.type==='pointerup'&&moved<6&&performance.now()-downT<300){vx=vy=0;flip();return;}
+      var cap=function(v){return Math.max(-400,Math.min(400,v*.5))};
+      vx=cap(fvx); vy=cap(fvy);
+    }
+    svg.addEventListener('pointerup',release);
+    svg.addEventListener('pointercancel',release);
+    svg.addEventListener('lostpointercapture',release);
+    svg.addEventListener('dragstart',function(e){e.preventDefault()});
+    svg.addEventListener('contextmenu',function(e){e.preventDefault()});
+  }
+  function step(dt){
+    if(held)return;
+    // semi-implicit Euler, sub-stepped for stability on slow frames
+    var n=Math.ceil(dt/.008), h=dt/n;
+    for(var i=0;i<n;i++){
+      vx+=(-K*ox-C*vx)*h; vy+=(-K*oy-C*vy)*h;
+      ox+=vx*h; oy+=vy*h;
+    }
+    if(Math.abs(ox)<.08&&Math.abs(oy)<.08&&Math.abs(vx)<1&&Math.abs(vy)<1){ox=oy=vx=vy=0}
+  }
   function frame(now){
     if(t0===null)t0=now;
+    var dt=last===null?0:Math.min(.05,(now-last)/1000); last=now;
+    step(dt);
     var t=(now-t0)/1000, k=1;
     var lift=.5-.5*Math.cos(TAU*t/5.5);            // 0..1, 5.5s breath
-    var y=-8*U*k*lift;                             // up to 8px rise
-    var x=2*U*k*Math.sin(TAU*t/8.5);              // +/-2px sideways drift
+    var y=-8*3*k*lift;                             // float rise (unchanged)
+    var x=2*3*k*Math.sin(TAU*t/8.5);              // sideways drift (unchanged)
     var r=2*Math.sin(TAU*t/7+.6);   // +/-2deg rock around the 7deg tilt
-    card.setAttribute('transform','translate('+x.toFixed(2)+' '+y.toFixed(2)+') rotate('+(7+r).toFixed(3)+' 200 126)');
-    var s=1-.1*k*lift;
-    sh.setAttribute('transform','translate('+(200+x*.6).toFixed(2)+' 312) scale('+s.toFixed(4)+' '+s.toFixed(4)+') translate(-200 -312)');
-    sh.setAttribute('opacity',(1-.35*k*lift).toFixed(3));
+    // flip progress
+    if(fa!==fTo){
+      if(fStart===null)fStart=now;
+      var fp=Math.min(1,(now-fStart)/fDur);
+      fa=fFrom+(fTo-fFrom)*easeIO(fp);
+      if(fp>=1){fa=fTo;fFrom=fTo;}
+    }
+    var fs=Math.sin(fa), fc=Math.cos(fa), isBack=fc<0;
+    var tx=x+ox*U, ty=y+oy*U-10*3*fs, tr=7+r+ROT*ox/MAX;   // ~10px lift at edge-on
+    if(isBack!==(back.getAttribute('visibility')==='visible')){back.setAttribute('visibility',isBack?'visible':'hidden');front.setAttribute('visibility',isBack?'hidden':'visible');}
+    flipG.setAttribute('transform',fa===0?'':'translate(200 126) skewY('+(-12*fs*fc).toFixed(3)+') scale('+Math.max(.002,Math.abs(fc)).toFixed(4)+' 1) translate(-200 -126)');
+    fshade.setAttribute('opacity',(.38*fs).toFixed(3));
+    card.setAttribute('transform','translate('+tx.toFixed(2)+' '+ty.toFixed(2)+') rotate('+tr.toFixed(3)+' 200 126)');
+    // shadow: float lift plus tug lift (pull up = smaller/fainter, push down = a touch bigger/darker)
+    var tl=-oy/MAX+.8*fs;                           // tug + flip lift
+    var s=Math.max(.7,Math.min(1.12,1-.1*k*lift-.14*tl));
+    sh.setAttribute('transform','translate('+(200+tx*.6).toFixed(2)+' 312) scale('+s.toFixed(4)+' '+s.toFixed(4)+') translate(-200 -312)');
+    sh.setAttribute('opacity',Math.max(.35,Math.min(1,1-.35*k*lift-.3*tl)).toFixed(3));
     // light sheen: one slow pass every 9s
     var c=(t%9)/2.2;
-    if(c<1){var e=ease(c);gr.setAttribute('gradientTransform','rotate(18) translate('+(-260+780*e).toFixed(1)+' 0)');sw.setAttribute('opacity',Math.sin(Math.PI*c).toFixed(3));}
-    else sw.setAttribute('opacity','0');
+    if(c<1){var e=ease(c);gr.setAttribute('gradientTransform','rotate(18) translate('+(-260+780*e).toFixed(1)+' 0)');var so=Math.sin(Math.PI*c).toFixed(3);sw.setAttribute('opacity',so);swB.setAttribute('opacity',so);}
+    else{sw.setAttribute('opacity','0');swB.setAttribute('opacity','0');}
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+  window.__heroTug=function(){return {ox:ox,oy:oy,vx:vx,vy:vy,held:held,fa:fa,fTo:fTo,name:nm&&nm.textContent,fsz:nm&&nm.getAttribute('font-size')}};
 })();
 </script>
 </body>
