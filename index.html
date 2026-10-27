@@ -30,8 +30,8 @@
   button:disabled{opacity:.5}
   #history{list-style:none;margin:12px 0 0;padding:0;max-height:48vh;overflow-y:auto;border-top:1px solid var(--ink)}
   #history li{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line);font-size:17px}
-  #history .cur{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:10px;background:#dbe4f7;color:#2f4f9e;font:600 12px/1.4 -apple-system,Helvetica,sans-serif;vertical-align:baseline;position:relative;top:-6px}
-  #history .edit{background:none;border:0;box-shadow:none;padding:0 6px 0 0;margin:0;width:auto;color:var(--warm);vertical-align:-1px;cursor:pointer}
+  #history .cur{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:10px;background:#dbe4f7;color:#2f4f9e;font:600 12px/1.4 -apple-system,Helvetica,sans-serif;vertical-align:baseline;position:relative;top:-3px}
+  #history .edit{background:none;border:0;box-shadow:none;padding:0 2px;margin:0 0 0 8px;width:auto;color:var(--warm);vertical-align:-1px;cursor:pointer}
   #history .t{color:var(--muted);font:12px/1.4 -apple-system,Helvetica,sans-serif;text-align:right}
   #nameBox{position:fixed;inset:0;background:rgba(242,242,242,.94);display:none;align-items:center;justify-content:center;padding:24px}
   #nameBox .card{width:100%;max-width:340px;border-left:0;padding-left:0}
@@ -134,7 +134,7 @@ function render(entries){ // newest first
   const cur = entries[0], f = fmt(cur.ts);
   $("holder").textContent = cur.name;
   $("since").textContent = `since ${f.time}, ${f.day} ${f.date}`;
-  $("history").innerHTML = entries.slice(0,10).map((e,i)=>{const g=fmt(e.ts);return `<li><span>${esc(e.name)}${i===0?'<span class="cur">Current</span>':''}</span><span class="t">${g.day}, ${g.date}<br>${canEdit(e)?`<button class="edit" data-id="${e.id}" aria-label="Edit name"><svg width="13" height="13" viewBox="0 0 16 16"><path d="M11.2 2.3l2.5 2.5-7.9 7.9-3.1.6.6-3.1z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg></button>`:''}${g.time}</span></li>`}).join("");
+  $("history").innerHTML = entries.slice(0,10).map((e,i)=>{const g=fmt(e.ts);return `<li><span>${esc(e.name)}${canEdit(e)?`<button class="edit" data-id="${e.id}" aria-label="Edit name"><svg width="13" height="13" viewBox="0 0 16 16"><path d="M11.2 2.3l2.5 2.5-7.9 7.9-3.1.6.6-3.1z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg></button>`:''}${i===0?'<span class="cur">Current</span>':''}</span><span class="t">${g.day}, ${g.date}<br>${g.time}</span></li>`}).join("");
 }
 
 // ----- confirmation tick -----
