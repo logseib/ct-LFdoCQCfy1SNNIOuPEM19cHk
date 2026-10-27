@@ -25,6 +25,9 @@
   button{position:relative}
   button:active{filter:brightness(.88)}
   #claim{background:#2f7a52}
+  #claim:disabled{opacity:1}
+  #claim.flash{animation:flash 2.4s ease-in forwards}
+  @keyframes flash{from{background:#97bca8}to{background:#2f7a52}}
   .tick{position:absolute;right:16px;top:50%;width:22px;height:22px;margin-top:-11px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.6);transition:opacity .25s,transform .25s;pointer-events:none}
   .tick.on{opacity:1;transform:scale(1)}
   button:disabled{opacity:.5}
@@ -147,7 +150,7 @@ function render(entries){ // newest first
 function tick(btn){
   let t=btn.querySelector(".tick");
   if(!t){t=document.createElement("span");t.className="tick";t.innerHTML='<svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.3l2.3 2.3 4.7-5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';btn.appendChild(t);}
-  t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),1400);
+  t.classList.add("on");btn.classList.remove("flash");void btn.offsetWidth;btn.classList.add("flash");clearTimeout(t._h);t._h=setTimeout(()=>{t.classList.remove("on");btn.classList.remove("flash")},2400);
 }
 // ----- name handling -----
 function myName(){ return localStorage.getItem(NAME_KEY) }
@@ -187,7 +190,7 @@ $("claim").onclick = async () => {
   const n = myName(); if(!n){ askName(); return; }
   $("claim").disabled = true;
   try{ remember(await addClaim(n)); tick($("claim")); } catch(e){ alert("Couldn't save: "+e.message); }
-  setTimeout(()=>$("claim").disabled=false, 1500);
+  setTimeout(()=>$("claim").disabled=false, 2400);
 };
 // ----- first-visit "Add to Home Screen" tip -----
 (function(){
