@@ -9,6 +9,7 @@
 <link rel="apple-touch-icon" href="icon-nbd-180.png">
 <link rel="icon" type="image/png" href="icon-nbd-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="color-scheme" content="light dark">
 <meta name="apple-mobile-web-app-title" content="Card Tracker">
 <title>Card Tracker</title>
 <style>
@@ -68,6 +69,19 @@
   #a2hs li::before{content:counter(s);font-size:12px;color:var(--muted);width:10px}
   #a2hs .ic{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:#ececec;flex:none}
   #a2hs .x{position:absolute;top:4px;right:8px;background:none;border:0;color:var(--ink);font-size:30px;line-height:1;width:auto;margin:0;padding:6px 8px}
+  @media (prefers-color-scheme: dark){
+    :root{--bg:#141414;--ink:#ececec;--muted:#9a9a9a;--line:#3a3a3a;--warm:#e8763f;color-scheme:dark}
+    #nameBox{background:rgba(20,20,20,.94)}
+    #nameBox input{color:var(--ink)}
+    #a2hs,#scanToast,#scanToast::before{background:#262626}
+    #a2hs{box-shadow:0 6px 24px rgba(0,0,0,.5)}
+    #scanToast{box-shadow:0 4px 18px rgba(0,0,0,.5)}
+    #scanToast .ok{color:#5fb487}
+    #a2hs .ic{background:#333}
+    #a2hs .ic path,#a2hs .ic rect{stroke:#c8c8c8}
+    #history .cur{background:#24345c;color:#b9c9f2}
+    #help{background:rgba(60,60,60,.8);color:#ccc}
+  }
 </style>
 </head>
 <body>
